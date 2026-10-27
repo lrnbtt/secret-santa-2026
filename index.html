@@ -83,19 +83,35 @@
   <section id="start" class="card" hidden>
     <p class="eyebrow">Welcome, lovely people</p>
     <h2>Come on in</h2>
-    <p class="subtle">New to the gathering? Make your own little profile. Already joined? Open your private link.</p>
-    <div class="actions"><button id="newJoin">Join the circle ✦</button><button id="existing" class="secondary">I already have a link</button></div>
+    <p class="subtle">Make a little profile, or return with your name and six-digit PIN.</p>
+    <div class="actions"><button id="newJoin">Join the circle ✦</button><button id="existing" class="secondary">Open my profile</button></div>
   </section>
 
   <section id="returnPanel" class="card" hidden>
-    <p class="eyebrow">An old friend returns</p><h2>Find your little profile</h2>
+    <p class="eyebrow">An old friend returns</p><h2>Welcome back</h2>
+    <p class="subtle">Your profile link is just your name — enter your private PIN to open your profile.</p>
     <form id="returnForm">
-      <label for="returnLink">Paste your private link or 64-character personal token</label>
-      <input id="returnLink" autocomplete="off" required>
-      <div class="actions"><button type="submit">Open my profile</button><button type="button" class="secondary" data-back>Back</button></div>
+      <label for="loginName">Your name or profile link</label>
+      <input id="loginName" required autocomplete="username" placeholder="e.g. lorena or your link">
+      <label for="loginPin">Your six-digit PIN</label>
+      <input type="password" id="loginPin" required inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" autocomplete="current-password" placeholder="••••••">
+      <div class="actions"><button type="submit">Open my profile ✦</button><button type="button" class="secondary" data-back>Back</button></div>
     </form>
-    <p class="hint">If you've lost your link, ask the organiser to replace it. Old links stop working after replacement.</p>
+    <p class="hint">Forgot your PIN? Ask the organiser to reset it. If you still have an old long private link, open it once to set up your PIN.</p>
     <div id="returnStatus" role="status" aria-live="polite"></div>
+  </section>
+
+  <section id="migrationPanel" class="card" hidden>
+    <p class="eyebrow">One little update</p><h2>Make your link simpler</h2>
+    <p>You've opened an old private link. Choose a six-digit PIN and we'll replace it with a short link using your name. Your wishlist, household and Secret Santa assignment will all stay the same.</p>
+    <form id="migrationForm">
+      <div class="form-grid">
+        <div><label for="migrationPin">Choose a six-digit PIN</label><input id="migrationPin" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" autocomplete="new-password" required></div>
+        <div><label for="migrationPin2">Confirm PIN</label><input id="migrationPin2" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" autocomplete="new-password" required></div>
+      </div>
+      <div class="actions"><button type="submit">Save my new PIN ✦</button></div>
+    </form>
+    <div id="migrationStatus" role="status" aria-live="polite"></div>
   </section>
 
   <section id="joinPanel" class="card" hidden>
@@ -103,8 +119,10 @@
     <p class="subtle">Only you and the person assigned to buy for you can view your wishes after the draw.</p>
     <form id="joinForm">
       <div class="form-grid">
-        <div class="span2"><label for="invite">Invitation code</label><input type="text" id="invite" required placeholder="Paste the code from your organiser" autocomplete="off"><p class="hint">Your organiser shares this privately.</p></div>
+        <div class="span2"><label for="invite">Invitation code</label><input type="text" id="invite" required placeholder="Enter the invitation phrase" autocomplete="off"><p class="hint">Ask your organiser for the invitation phrase.</p></div>
         <div class="span2"><label for="joinName">Your name *</label><input id="joinName" maxlength="50" required minlength="2" placeholder="What shall we call you?"></div>
+        <div><label for="joinPin">Choose a six-digit PIN *</label><input id="joinPin" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" autocomplete="new-password" required placeholder="••••••"></div>
+        <div><label for="joinPin2">Confirm your PIN *</label><input id="joinPin2" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" autocomplete="new-password" required placeholder="••••••"></div>
         <div class="span2"><label for="joinHousehold">Household (optional)</label><input id="joinHousehold" maxlength="50" placeholder="e.g. The Maple Flat"><p class="hint">Living alone? Leave this blank. If you live with another participant, use the same household name they use. You won't draw one another.</p></div>
         <div><label for="joinLikes">Likes and favourite things</label><textarea id="joinLikes" maxlength="500" placeholder="Hobbies, favourite colours, scents, snacks…"></textarea></div>
         <div><label for="joinDislikes">Dislikes</label><textarea id="joinDislikes" maxlength="500" placeholder="Things that aren't really your cup of tea…"></textarea></div>
@@ -117,10 +135,10 @@
   </section>
 
   <section id="successPanel" class="card" hidden>
-    <p class="eyebrow">You're in!</p><h2>Keep this little key safe</h2>
-    <p>Your personal link is the key to editing your profile and revealing your Secret Santa. Anyone holding it can access your profile.</p>
+    <p class="eyebrow">You're in!</p><h2>Your little corner is ready</h2>
+    <p>Here's your easy-to-remember profile link. Your PIN is the secret part, so share the link freely but keep the PIN to yourself.</p>
     <code id="newLink" class="linkbox"></code>
-    <div class="actions"><button id="copyNew">Copy my private link</button><button id="openNew" class="secondary">Go to my profile</button></div>
+    <div class="actions"><button id="copyNew">Copy my profile link</button><button id="openNew" class="secondary">Open my profile</button></div>
     <div id="successStatus" role="status" aria-live="polite"></div>
   </section>
 
@@ -142,6 +160,16 @@
       <div class="actions"><button type="submit">Save my changes</button><button type="button" id="copyCurrent" class="secondary">Copy my private link</button></div>
     </form>
     <div id="profileStatus" role="status" aria-live="polite"></div>
+    <hr><h3>Change your PIN</h3>
+    <p class="subtle">Use a PIN that's hard for friends to guess. Your link stays the same.</p>
+    <form id="changePinForm">
+      <div class="form-grid">
+        <div><label for="changePin1">New six-digit PIN</label><input id="changePin1" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" autocomplete="new-password" required></div>
+        <div><label for="changePin2">Confirm new PIN</label><input id="changePin2" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" autocomplete="new-password" required></div>
+      </div>
+      <div class="actions"><button type="submit" class="secondary">Change my PIN</button></div>
+    </form>
+    <div id="changePinStatus" role="status" aria-live="polite"></div>
     <hr><h3>The little gathering</h3><ul id="nameList" class="list-names"></ul>
   </section>
 
@@ -157,157 +185,237 @@
     <ul id="adminPeople" class="admin-people"></ul>
     <div id="drawPanel"><hr><h3>Draw names</h3><p class="subtle">Each person gets one different person, never anyone from their own household. The draw makes one big circle and cannot be repeated.</p><div id="drawWarning" class="note error" hidden></div><button id="drawButton">Draw the names ✦</button></div>
     <div id="adminStatus" role="status" aria-live="polite"></div>
-    <div id="replacement" class="note" hidden><strong>Replacement private link</strong><p id="replacementName"></p><code id="replacementLink" class="linkbox"></code><button id="copyReplacement">Copy replacement link</button><p class="hint">Send this only to its owner. Their previous link is now invalid.</p></div>
+    <div id="replacement" class="note" hidden><strong>New temporary PIN</strong><p id="replacementName"></p><code id="replacementLink" class="linkbox"></code><p id="replacementPin" class="linkbox"></p><button id="copyReplacement">Copy link and PIN</button><p class="hint">Send the new PIN privately to its owner. Their previous PIN or long token link no longer works. They can change this PIN once signed in.</p></div>
   </section>
  </div>
 </main>
 <footer>Made for friends, thoughtful gifts, and a little festive mystery. ✦</footer>
 <script>
 'use strict';
-// Paste your Apps Script Web app URL, e.g. https://script.google.com/macros/s/AKfy.../exec
-const API_URL = 'https://script.google.com/macros/s/AKfycbxtXG9r9r5OC1pTU4W4IokwbU5ERFtty5YpySTMAJa3ORGzYo0X8ZBozrtHbtr9zSomgw/exec';
+// Paste your existing Apps Script /exec URL here; keep the same deployment.
+const API_URL = 'https://script.google.com/macros/s/AKfycbwstml3m98z8NIyNX79sDfrCKq9r9gD39doDqT7Efl9-cnX_68O1YEtaAk3ra62_9FEgg/exec';
 const $ = id => document.getElementById(id);
-const panes = ['configuration','start','returnPanel','joinPanel','successPanel','privatePanel','adminLogin','adminPanel'];
-let myToken = '';
+const panes = ['configuration','start','returnPanel','migrationPanel','joinPanel','successPanel','privatePanel','adminLogin','adminPanel'];
+let mySlug = '';
+let myPin = ''; // only held in this page's memory; never placed in links, storage or GitHub
+let oldToken = '';
 let adminCode = '';
 let latestAdmin = null;
 let generatedLink = '';
-function show(id){panes.forEach(x=>$(x).hidden = x!==id);}
-function notice(id,text,kind='error'){$(id).replaceChildren(); if(text){const el=document.createElement('div');el.className='note '+kind;el.textContent=text;$(id).append(el);}}
-function field(prefix){return {name:$(prefix+'Name').value,household:$(prefix+'Household').value,likes:$(prefix+'Likes').value,dislikes:$(prefix+'Dislikes').value,wishlist:$(prefix+'Wishlist').value,important:$(prefix+'Important').value};}
-function fill(prefix,p){for(const [key,value] of Object.entries(p)){$(prefix+key[0].toUpperCase()+key.slice(1)).value=value||'';}}
-function privateLink(token){const url=new URL(window.location.href);url.searchParams.delete('organiser');url.hash='token='+encodeURIComponent(token);return url.toString();}
-function readToken(text){
-  const trimmed=String(text||'').trim();
-  if(/^([a-f0-9]{32}|[a-f0-9]{64})$/i.test(trimmed))
-    return trimmed.toLowerCase();
-  try {const url=new URL(trimmed);const frag=new URLSearchParams(url.hash.slice(1));return frag.get('token')||'';}catch {return '';}
+let resetInfo = '';
+function show(id) { panes.forEach(x => $(x).hidden = x !== id); }
+function notice(id, msg, kind='error') {
+  $(id).replaceChildren();
+  if (msg) { const el = document.createElement('div'); el.className='note '+kind; el.textContent=msg; $(id).append(el); }
 }
-async function copyText(value, statusId){
-  try {await navigator.clipboard.writeText(value);notice(statusId,'Copied! Keep your private link safe.','success');}
-  catch {notice(statusId,'Copy isn’t available in this browser. Select the link above and copy it manually.','error');}
+function field(prefix) {
+  return {name:$(prefix+'Name').value, household:$(prefix+'Household').value,
+    likes:$(prefix+'Likes').value, dislikes:$(prefix+'Dislikes').value,
+    wishlist:$(prefix+'Wishlist').value, important:$(prefix+'Important').value};
 }
-async function api(action, data={}) {
-  const ctrl=new AbortController(); const timer=setTimeout(()=>ctrl.abort(),18000);
-  try {
-    const response=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,...data}),credentials:'omit',referrerPolicy:'no-referrer',cache:'no-store',signal:ctrl.signal});
-    const body=await response.json();
-    if(!response.ok || !body.ok)throw new Error(body.error || 'Unable to connect.');
-    return body.result;
-  } catch(e) {
-    if(e.name==='AbortError')throw new Error('The connection took too long. Please try again.');
-    if(e instanceof TypeError)throw new Error('Unable to reach the gift exchange. Check the Apps Script URL and that it is deployed with access set to “Anyone”.');
-    throw e;
-  } finally {clearTimeout(timer);}
-}
-function submitBtn(ev){return ev.submitter||ev.target.querySelector('[type=submit]');}
-async function busy(button,fn){button.disabled=true;try{await fn();}finally{button.disabled=false;}}
-function addText(parent,tag,text,css){const e=document.createElement(tag);e.textContent=text;if(css)e.className=css;parent.append(e);return e;}
-function displayPerson(container, person){
-  container.replaceChildren();
-  const c=addText(container,'div','','person');
-  addText(c,'p','Your secret assignment','eyebrow');addText(c,'h3','You’re buying for '+person.name+'!');
-  const dl=addText(c,'dl','');
-  for(const [label,key] of [['Likes','likes'],['Dislikes','dislikes'],['Wishlist','wishlist'],['Important notes','important']]){
-    addText(dl,'dt',label);addText(dl,'dd',person[key] || 'No notes yet.');
+function fill(prefix, profile) {
+  for (const [key,value] of Object.entries(profile)) {
+    const element = $(prefix + key[0].toUpperCase() + key.slice(1));
+    if (element) element.value = value || '';
   }
 }
-async function loadProfile(token){
-  const p=await api('mine',{token}); myToken=token;
-  history.replaceState({},'',privateLink(token));
-  $('welcomeName').textContent='Hello, '+p.me.name+'!';fill('edit',p.me);
-  $('editHousehold').disabled=!!p.drawn;
-  $('editHouseholdHint').textContent=p.drawn
-    ? 'Households are locked now that the names have been drawn.'
-    : 'Use exactly the same household name as anyone you live with. You can change this until names are drawn.';
+function slugify(name) {
+  return String(name||'').normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,56);
+}
+function profileLink(slug) {
+  const u = new URL(location.href);
+  u.searchParams.delete('organiser'); u.searchParams.set('person', slug); u.hash='';
+  return u.toString();
+}
+function resolveSlug(text) {
+  const s = String(text||'').trim();
+  try { return new URL(s).searchParams.get('person') || ''; }
+  catch { return slugify(s); }
+}
+function readLegacyToken(text) {
+  try {
+    const token = new URLSearchParams(new URL(text).hash.slice(1)).get('token') || '';
+    return /^([a-f0-9]{32}|[a-f0-9]{64})$/i.test(token) ? token.toLowerCase() : '';
+  } catch { return ''; }
+}
+function scrubLegacyHash() {
+  const u = new URL(location.href); u.hash=''; history.replaceState({},'',u.toString());
+}
+async function copyText(value, statusId) {
+  try { await navigator.clipboard.writeText(value); notice(statusId,'Copied!','success'); }
+  catch { notice(statusId,'Copy unavailable here. Select and copy the text manually.'); }
+}
+async function api(action, data={}) {
+  const ctrl = new AbortController(); const timer=setTimeout(()=>ctrl.abort(),18000);
+  try {
+    const response=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({action,...data}),credentials:'omit',referrerPolicy:'no-referrer',cache:'no-store',signal:ctrl.signal});
+    const body=await response.json();
+    if (!response.ok || !body.ok) throw new Error(body.error || 'Unable to connect.');
+    return body.result;
+  } catch(e) {
+    if(e.name==='AbortError') throw new Error('Connection timed out. Please try again.');
+    if(e instanceof TypeError) throw new Error('Unable to reach the exchange. Check your Apps Script deployment and API URL.');
+    throw e;
+  } finally { clearTimeout(timer); }
+}
+function submitBtn(ev) { return ev.submitter || ev.target.querySelector('[type=submit]'); }
+async function busy(button, fn) { button.disabled=true; try { await fn(); } finally { button.disabled=false; } }
+function addText(parent, tag, text, css) {
+  const e=document.createElement(tag);e.textContent=text;if(css)e.className=css;parent.append(e);return e;
+}
+function displayPerson(container,person) {
+  container.replaceChildren();
+  const c=addText(container,'div','','person');
+  addText(c,'p','Your secret assignment','eyebrow'); addText(c,'h3','You’re buying for '+person.name+'!');
+  const dl=addText(c,'dl','');
+  for (const [label,key] of [['Likes','likes'],['Dislikes','dislikes'],['Wishlist','wishlist'],['Important notes','important']]) {
+    addText(dl,'dt',label);addText(dl,'dd',person[key]||'No notes yet.');
+  }
+}
+async function loadProfile(slug, pin) {
+  const data=await api('mine',{slug,pin}); mySlug=slug;myPin=pin;
+  history.replaceState({},'',profileLink(slug));
+  $('welcomeName').textContent='Hello, '+data.me.name+'!'; fill('edit',data.me);
+  $('editHousehold').disabled=!!data.drawn;
+  $('editHouseholdHint').textContent=data.drawn
+    ? 'Households are locked now that names have been drawn.'
+    : 'Use the same household name as anyone you live with. You can edit this until names are drawn.';
   const area=$('recipientArea');area.replaceChildren();
-  if(p.recipient)displayPerson(area,p.recipient);
-  else addText(area,'div','Your secret person will appear here when the organiser has drawn the names.','note');
-  $('nameList').replaceChildren();for(const name of p.names)addText($('nameList'),'li',name);
-  show('privatePanel');return p;
+  if(data.recipient)displayPerson(area,data.recipient);
+  else addText(area,'div','Your secret person will appear after the organiser draws names.','note');
+  $('nameList').replaceChildren();for(const name of data.names)addText($('nameList'),'li',name);
+  show('privatePanel'); return data;
 }
-async function refreshCount(){
-  try {const p=await api('publicInfo');$('counter').textContent=p.count+' '+(p.count===1?'person':'people')+' in the exchange'+(p.drawn?' · The names have been drawn':'');}
-  catch(e){$('counter').textContent='Could not load the gathering: '+e.message;}
+async function refreshCount() {
+  try {const p=await api('publicInfo'); $('counter').textContent=p.count+' '+(p.count===1?'person':'people')+' in the exchange'+(p.drawn?' · Names have been drawn':'');}
+  catch(e) {$('counter').textContent='Could not load the gathering: '+e.message;}
 }
-async function loadAdmin(){
+async function loadAdmin() {
   const view=await api('adminView',{adminCode});latestAdmin=view;
   $('adminSummary').textContent=view.count+' '+(view.count===1?'person':'people')+' in the exchange · '+(view.drawn?'Names have been drawn':'Waiting for the draw');
   $('adminPeople').replaceChildren();
-  for(const person of view.participants){
-    const li=addText($('adminPeople'),'li','');addText(li,'span',person.name);
+  for(const person of view.participants) {
+    const li=addText($('adminPeople'),'li','');
+    addText(li,'span',person.name + (person.slug?' · '+person.slug:' · PIN not set'));
     const tools=document.createElement('div');tools.className='admin-tools';li.append(tools);
     addText(tools,'span','Household','fine');
     const householdInput=document.createElement('input');
     householdInput.setAttribute('aria-label','Household for '+person.name);
     householdInput.maxLength=50;householdInput.placeholder='Lives alone';householdInput.value=person.household||'';
     tools.append(householdInput);
-    if(view.drawn){householdInput.disabled=true;}
+    if(view.drawn) householdInput.disabled=true;
     else {
       const saveHouse=addText(tools,'button','Save household');saveHouse.type='button';saveHouse.className='secondary';
       saveHouse.addEventListener('click',()=>busy(saveHouse,async()=>{
         try {await api('setHousehold',{adminCode,personId:person.id,household:householdInput.value});
-          await loadAdmin();notice('adminStatus','Household updated for '+person.name+'.','success');
-        }catch(e){notice('adminStatus',e.message);}
+          await loadAdmin(); notice('adminStatus','Household saved for '+person.name+'.','success');}
+        catch(e){notice('adminStatus',e.message);}
       }));
     }
-    const btn=addText(tools,'button','Replace private link');btn.type='button';btn.className='secondary';
+    const btn=addText(tools,'button','Reset PIN');btn.type='button';btn.className='secondary';
     btn.addEventListener('click',()=>busy(btn,async()=>{
-      if(!confirm('Invalidate '+person.name+'\'s current private link and create a new one?'))return;
-      try {const result=await api('resetLink',{adminCode,personId:person.id});
-        generatedLink=privateLink(result.token);$('replacementName').textContent='For '+result.name+':';$('replacementLink').textContent=generatedLink;
-        $('replacement').hidden=false;notice('adminStatus','A new private link was created. Send it only to its owner.','success');
-      } catch(e){notice('adminStatus',e.message);}
-    }));$('adminPeople').append(li);
+      if(!confirm('Reset '+person.name+'\'s PIN? Their previous PIN and old private link will stop working.'))return;
+      try {
+        const result=await api('resetPin',{adminCode,personId:person.id});
+        generatedLink=profileLink(result.slug);
+        resetInfo=generatedLink+'\nTemporary PIN: '+result.pin;
+        $('replacementName').textContent='For '+result.name+':';
+        $('replacementLink').textContent=generatedLink;
+        $('replacementPin').textContent='Temporary PIN: '+result.pin;
+        $('replacement').hidden=false;
+        await loadAdmin();
+        notice('adminStatus','New PIN generated. Send it privately and encourage them to change it.','success');
+      } catch(e){ notice('adminStatus',e.message); }
+    }));
+    $('adminPeople').append(li);
   }
   $('drawPanel').hidden=view.drawn;
   $('drawButton').disabled=!view.canDraw;
   $('drawWarning').hidden=view.drawn || view.count<3 || view.canDraw;
-  if(!view.drawn && view.count>=3 && !view.canDraw){
-    $('drawWarning').textContent='The draw is not possible yet: the largest household has '+view.largestHousehold+' of '+view.count+' people. No household can include more than half the participants. Review the groups before drawing.';
-  }
+  if(!view.drawn && view.count>=3 && !view.canDraw)
+    $('drawWarning').textContent='The largest household has '+view.largestHousehold+' of '+view.count+' people. A household cannot make up more than half the group.';
   show('adminPanel');
 }
 $('newJoin').addEventListener('click',()=>show('joinPanel'));
 $('existing').addEventListener('click',()=>show('returnPanel'));
-for(const b of document.querySelectorAll('[data-back]'))b.addEventListener('click',()=>show('start'));
-$('joinForm').addEventListener('submit',ev=>{ev.preventDefault();const btn=submitBtn(ev);busy(btn,async()=>{
-  notice('joinStatus','');try {const p=await api('register',{joinCode:$('invite').value.trim().toLowerCase(),profile:field('join')});
-    myToken=p.token;generatedLink=privateLink(myToken);$('newLink').textContent=generatedLink;
-    history.replaceState({},'',generatedLink);show('successPanel');refreshCount();
-  }catch(e){notice('joinStatus',e.message);}
+for(const b of document.querySelectorAll('[data-back]')) b.addEventListener('click',()=>show('start'));
+$('joinForm').addEventListener('submit',ev=>{ev.preventDefault();busy(submitBtn(ev),async()=>{
+  notice('joinStatus','');
+  if($('joinPin').value!==$('joinPin2').value){notice('joinStatus','Your PINs do not match.');return;}
+  try {
+    const pin=$('joinPin').value;
+    const result=await api('register',{joinCode:$('invite').value.trim(),profile:field('join'),pin});
+    mySlug=result.slug;myPin=pin;generatedLink=profileLink(mySlug);
+    $('joinPin').value='';$('joinPin2').value='';
+    $('newLink').textContent=generatedLink;history.replaceState({},'',generatedLink);
+    show('successPanel');refreshCount();
+  } catch(e){notice('joinStatus',e.message);}
 });});
-$('returnForm').addEventListener('submit',ev=>{ev.preventDefault();const btn=submitBtn(ev);busy(btn,async()=>{
-  notice('returnStatus','');const token=readToken($('returnLink').value);
-  if(!token){notice('returnStatus','That doesn’t look like a personal link.');return;}
-  try {await loadProfile(token);}catch(e){notice('returnStatus',e.message);}
+$('returnForm').addEventListener('submit',ev=>{ev.preventDefault();busy(submitBtn(ev),async()=>{
+  notice('returnStatus','');
+  const slug=resolveSlug($('loginName').value);
+  if(!slug){notice('returnStatus','Please enter your name or profile link.');return;}
+  try {await loadProfile(slug,$('loginPin').value);$('loginPin').value='';}
+  catch(e){notice('returnStatus',e.message);}
+});});
+$('migrationForm').addEventListener('submit',ev=>{ev.preventDefault();busy(submitBtn(ev),async()=>{
+  notice('migrationStatus','');
+  if($('migrationPin').value!==$('migrationPin2').value){notice('migrationStatus','Your PINs do not match.');return;}
+  try {
+    const pin=$('migrationPin').value;
+    const result=await api('claimPin',{token:oldToken,pin});
+    oldToken=''; mySlug=result.slug;myPin=pin;
+    $('migrationPin').value='';$('migrationPin2').value='';
+    generatedLink=profileLink(mySlug);$('newLink').textContent=generatedLink;
+    history.replaceState({},'',generatedLink);show('successPanel');
+  } catch(e){notice('migrationStatus',e.message);}
 });});
 $('copyNew').addEventListener('click',()=>copyText(generatedLink,'successStatus'));
-$('openNew').addEventListener('click',async()=>{try{await loadProfile(myToken);}catch(e){notice('successStatus',e.message);}});
-$('editForm').addEventListener('submit',ev=>{ev.preventDefault();const btn=submitBtn(ev);busy(btn,async()=>{
-  try{const p=await api('save',{token:myToken,profile:field('edit')});$('welcomeName').textContent='Hello, '+p.me.name+'!';
+$('openNew').addEventListener('click',async()=>{
+  try { await loadProfile(mySlug,myPin); }catch(e){notice('successStatus',e.message);}
+});
+$('editForm').addEventListener('submit',ev=>{ev.preventDefault();busy(submitBtn(ev),async()=>{
+  try {
+    const p=await api('save',{slug:mySlug,pin:myPin,profile:field('edit')});
+    $('welcomeName').textContent='Hello, '+p.me.name+'!';
     $('nameList').replaceChildren();for(const name of p.names)addText($('nameList'),'li',name);
     notice('profileStatus','Your changes are saved.','success');
-  }catch(e){notice('profileStatus',e.message);}
+  } catch(e){notice('profileStatus',e.message);}
 });});
-$('copyCurrent').addEventListener('click',()=>copyText(privateLink(myToken),'profileStatus'));
-$('adminForm').addEventListener('submit',ev=>{ev.preventDefault();const btn=submitBtn(ev);busy(btn,async()=>{
-  adminCode=$('adminCode').value.trim().toLowerCase();try{await loadAdmin();}catch(e){notice('adminLoginStatus',e.message);}
+$('copyCurrent').addEventListener('click',()=>copyText(profileLink(mySlug),'profileStatus'));
+$('changePinForm').addEventListener('submit',ev=>{ev.preventDefault();busy(submitBtn(ev),async()=>{
+  notice('changePinStatus','');
+  const next=$('changePin1').value;
+  if(next!==$('changePin2').value){notice('changePinStatus','Your PINs do not match.');return;}
+  try {await api('changePin',{slug:mySlug,pin:myPin,newPin:next});myPin=next;
+    $('changePin1').value='';$('changePin2').value='';
+    notice('changePinStatus','Your PIN was updated. Remember your new PIN!','success');}
+  catch(e){notice('changePinStatus',e.message);}
+});});
+$('adminForm').addEventListener('submit',ev=>{ev.preventDefault();busy(submitBtn(ev),async()=>{
+  adminCode=$('adminCode').value.trim().toLowerCase();
+  try {await loadAdmin();}catch(e){notice('adminLoginStatus',e.message);}
 });});
 $('drawButton').addEventListener('click',()=>busy($('drawButton'),async()=>{
   if(!latestAdmin || latestAdmin.count<3){notice('adminStatus','At least three friends are needed for the draw.');return;}
-  if(!confirm('Have you checked everyone’s household? Draw names now? This is permanent and cannot be repeated.'))return;
-  try {await api('draw',{adminCode});await loadAdmin();await refreshCount();notice('adminStatus','The draw is complete! Everyone can now open their private links.','success');}
+  if(!confirm('Have you checked the households? Draw names now? This cannot be repeated.'))return;
+  try {await api('draw',{adminCode});await loadAdmin();await refreshCount();notice('adminStatus','Names drawn! Everyone can now sign in with their name and PIN.','success');}
   catch(e){notice('adminStatus',e.message);}
 }));
-$('copyReplacement').addEventListener('click',()=>copyText(generatedLink,'adminStatus'));
+$('copyReplacement').addEventListener('click',()=>copyText(resetInfo,'adminStatus'));
 (async()=>{
   if(!/^https:\/\/.+/.test(API_URL)||API_URL.includes('PASTE_')){$('counter').textContent='';show('configuration');return;}
   const adminMode=new URLSearchParams(location.search).get('organiser')==='1';
-  const token=readToken(location.href);
-  if(adminMode)show('adminLogin');
-  else if(token){try{await loadProfile(token);}catch(e){show('returnPanel');notice('returnStatus',e.message);}}
-  else show('start');
+  oldToken=readLegacyToken(location.href);
+  if(adminMode) show('adminLogin');
+  else if(oldToken){scrubLegacyHash();show('migrationPanel');}
+  else {
+    const slug=new URLSearchParams(location.search).get('person')||'';
+    if(slug) {$('loginName').value=slug;show('returnPanel');}
+    else show('start');
+  }
   refreshCount();
 })();
 </script>
