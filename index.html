@@ -54,7 +54,7 @@
       <p>Come on in, make your profile and leave a few hints for whoever picks your name. When the names are drawn, your secret mission will be waiting.</p>
       <a id="enterLink" class="button" hidden>Enter the gift exchange ✦</a>
       <p id="enterNote" class="mini-note" hidden>The exchange opens directly in our private little app. No Google sign-in needed.</p>
-      <div id="setup" role="alert"><strong>One tiny setup step left.</strong><p>In <code>index.html</code>, replace <code>https://script.google.com/macros/s/AKfycbyBieYm1ypNkPrCaSckWpr2WKpfbvmBBsDfqmZORdsQ1B8Q94COwOr2EMbWjf97dTUhbg/exec/code> with your Apps Script deployment URL ending in <code>/exec</code>.</p></div>
+      <div id="setup" role="alert"><strong>One tiny setup step left.</strong><p>In <code>index.html</code>, replace <code>https://script.google.com/macros/s/AKfycbyBieYm1ypNkPrCaSckWpr2WKpfbvmBBsDfqmZORdsQ1B8Q94COwOr2EMbWjf97dTUhbg/exec</code> with your Apps Script deployment URL ending in <code>/exec</code>.</p></div>
       <div class="features" aria-label="How it works">
         <div class="feature"><strong>01 / Join the circle</strong><span>Add your name, likes, dislikes and wishlist.</span></div>
         <div class="feature"><strong>02 / Keep your link</strong><span>Save the private link to your little profile.</span></div>
@@ -65,7 +65,7 @@
   <footer>Made for friends, thoughtful gifts, and a little festive mystery. ✦</footer>
   <script>
     // Paste the SAME deployed Apps Script URL you used in the original version.
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyBieYm1ypNkPrCaSckWpr2WKpfbvmBBsDfqmZORdsQ1B8Q94COwOr2EMbWjf97dTUhbg/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbysulM2vJA3OAea31o-8sMqS8mxASZdGWUZawaCTWs0ygq4JbK1oOr7Ds-CHr67Nlq33g/exec';
     const enter = document.getElementById('enterLink');
     const setup = document.getElementById('setup');
     if (!/^https:\/\/script\.google\.com\/macros\/s\/[^/?#]+\/exec\/?$/.test(SCRIPT_URL)) {
