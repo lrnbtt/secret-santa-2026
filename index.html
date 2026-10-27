@@ -4,12 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light">
   <title>The little Secret Santa club</title>
   <meta name="description" content="A cosy little Secret Santa circle for friends.">
   <style>
     :root{--pine:#2d493c;--red:#9b3d46;--cream:#f7f4ea;--ink:#324337}
-    *{box-sizing:border-box}html{scroll-behavior:smooth}
-    body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.55 Georgia,'Times New Roman',serif}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:var(--cream);color:var(--ink);font:16px/1.55 Georgia,'Times New Roman',serif}
     body:before{content:"";position:fixed;pointer-events:none;inset:0;opacity:.34;background-image:radial-gradient(#b8b39d .5px,transparent .7px);background-size:9px 9px}
     header,main,footer{position:relative;z-index:1}
     header{padding:35px 20px 20px;text-align:center}
@@ -17,14 +18,25 @@
     .art{font-size:2.8rem;color:#a97c44;margin:5px 0}
     h1{font-size:clamp(2.4rem,8vw,4.5rem);letter-spacing:-.03em;line-height:1.08;font-weight:normal;margin:8px 0 12px;color:var(--pine)}
     .sub{max-width:540px;margin:0 auto;color:#677066}
-    main{max-width:900px;margin:auto;padding:10px 14px 40px}
+    main{max-width:780px;margin:auto;padding:10px 14px 44px}
     .border{padding:13px;border:1px solid #d7d1bc;border-radius:24px;background:#eee8d7;box-shadow:0 18px 60px rgba(31,47,35,.08)}
-    iframe{display:block;width:100%;height:1100px;border:0;border-radius:15px;background:#f7f4ea}
-    #setup{display:none;background:#fffdf7;border-radius:15px;padding:25px}
-    .fallback{text-align:center;color:#657267;font:14px/1.6 Arial,sans-serif;margin:17px auto}
-    .fallback a{color:var(--red);text-decoration:underline;text-underline-offset:3px}
+    .welcome{background:#fffdf7;border:1px solid #ddd5c5;border-radius:15px;text-align:center;padding:clamp(28px,7vw,58px) clamp(19px,5vw,56px)}
+    .eyebrow{font:700 .73rem/1.4 Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin:0 0 11px}
+    h2{font-size:clamp(1.6rem,5vw,2.35rem);line-height:1.2;font-weight:normal;margin:0 0 12px}
+    .welcome p{max-width:490px;margin:0 auto 17px;color:#687368}
+    .button{display:inline-block;border:1px solid var(--pine);border-radius:7px;background:var(--pine);color:#fff;text-decoration:none;padding:14px 25px;margin:16px 0 12px;font:600 .95rem/1.4 Arial,sans-serif;transition:filter .2s,transform .2s}
+    .button:hover{filter:brightness(1.13);transform:translateY(-1px)}.button:focus-visible{outline:3px solid #a97c44;outline-offset:3px}
+    .mini-note{font:13px/1.55 Arial,sans-serif!important;color:#758075!important;margin:10px auto 0!important}
+    .features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-top:25px;text-align:left}
+    .feature{border-top:1px solid #e6dece;padding-top:13px}
+    .feature strong{display:block;font-size:.98rem;color:var(--pine);font-weight:normal}
+    .feature span{display:block;color:#687368;font-size:.86rem;margin-top:4px}
+    .mistletoe{color:#a97c44;font-size:1.55rem;margin:0 0 10px}
+    #setup{display:none;text-align:left;border-radius:12px;padding:17px;background:#faf0e9;color:#723e3b;margin-top:16px}
+    #setup code{overflow-wrap:anywhere}
     footer{text-align:center;font:13px/1.5 Arial,sans-serif;color:#768071;padding:10px 15px 40px}
-    @media(max-width:600px){header{padding-top:25px}.border{padding:5px;border-radius:13px}iframe{height:1350px;border-radius:9px}}
+    @media(max-width:590px){header{padding-top:25px}.border{padding:6px;border-radius:14px}.features{grid-template-columns:1fr;gap:7px}.feature{padding-top:10px}.welcome{border-radius:10px}}
+    @media(prefers-reduced-motion:reduce){.button{transition:none}}
   </style>
 </head>
 <body>
@@ -35,27 +47,39 @@
     <p class="sub">A secret name, a thoughtful gift, and some good old-fashioned festive mystery. Welcome, lovely people.</p>
   </header>
   <main>
-    <div class="border">
-      <div id="setup"><h2>One tiny setup step left</h2><p>Open <code>github-pages/index.html</code> and replace <code>PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE</code> with your deployed Apps Script URL.</p></div>
-      <iframe id="santaFrame" title="Secret Santa profiles and draw" referrerpolicy="no-referrer" loading="eager"></iframe>
-    </div>
-    <p class="fallback">Can't see the little club above? <a id="directLink" href="#" target="_blank" rel="noopener noreferrer">Open the gift exchange directly</a>.</p>
+    <div class="border"><section class="welcome" aria-labelledby="welcome-heading">
+      <div class="mistletoe" aria-hidden="true">✧ ❦ ✧</div>
+      <p class="eyebrow">Your invitation awaits</p>
+      <h2 id="welcome-heading">There’s a little gift exchange happening…</h2>
+      <p>Come on in, make your profile and leave a few hints for whoever picks your name. When the names are drawn, your secret mission will be waiting.</p>
+      <a id="enterLink" class="button" hidden>Enter the gift exchange ✦</a>
+      <p id="enterNote" class="mini-note" hidden>The exchange opens directly in our private little app. No Google sign-in needed.</p>
+      <div id="setup" role="alert"><strong>One tiny setup step left.</strong><p>In <code>index.html</code>, replace <code>https://script.google.com/macros/s/AKfycbyBieYm1ypNkPrCaSckWpr2WKpfbvmBBsDfqmZORdsQ1B8Q94COwOr2EMbWjf97dTUhbg/exec/code> with your Apps Script deployment URL ending in <code>/exec</code>.</p></div>
+      <div class="features" aria-label="How it works">
+        <div class="feature"><strong>01 / Join the circle</strong><span>Add your name, likes, dislikes and wishlist.</span></div>
+        <div class="feature"><strong>02 / Keep your link</strong><span>Save the private link to your little profile.</span></div>
+        <div class="feature"><strong>03 / Discover your person</strong><span>After the draw, find out who you’re buying for.</span></div>
+      </div>
+    </section></div>
   </main>
   <footer>Made for friends, thoughtful gifts, and a little festive mystery. ✦</footer>
   <script>
-    // Replace ONLY the value below, after deploying your Google Apps Script web app.
+    // Paste the SAME deployed Apps Script URL you used in the original version.
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyBieYm1ypNkPrCaSckWpr2WKpfbvmBBsDfqmZORdsQ1B8Q94COwOr2EMbWjf97dTUhbg/exec';
-    const frame = document.getElementById('santaFrame');
-    const direct = document.getElementById('directLink');
-    if (!/^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(SCRIPT_URL)) {
-      frame.hidden = true;document.getElementById('setup').style.display='block';direct.removeAttribute('href');
+    const enter = document.getElementById('enterLink');
+    const setup = document.getElementById('setup');
+    if (!/^https:\/\/script\.google\.com\/macros\/s\/[^/?#]+\/exec\/?$/.test(SCRIPT_URL)) {
+      setup.style.display = 'block';
     } else {
       const url = new URL(SCRIPT_URL);
+      url.searchParams.set('view', 'guest');
+      url.searchParams.set('site', window.location.origin + window.location.pathname);
       const token = new URLSearchParams(window.location.search).get('token');
       if (token) url.searchParams.set('token', token);
-      // A public link can be built inside the Apps Script UI, without exposing tokens to other users.
-      url.searchParams.set('site', window.location.origin + window.location.pathname);
-      frame.src=url.toString();direct.href=url.toString();
+      // Top-level navigation avoids the fragile cross-origin Google iframe.
+      enter.href = url.toString();
+      enter.hidden = false;
+      document.getElementById('enterNote').hidden = false;
     }
   </script>
 </body>
