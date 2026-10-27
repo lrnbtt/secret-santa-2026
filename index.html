@@ -103,7 +103,7 @@
 
   <section id="migrationPanel" class="card" hidden>
     <p class="eyebrow">One little update</p><h2>Make your link simpler</h2>
-    <p>You've opened an old private link. Choose a six-digit PIN and we'll replace it with a short link using your name. Your wishlist, household and Secret Santa assignment will all stay the same.</p>
+    <p>You've opened an old private link. Choose a six-digit PIN and we'll replace it with a short link using your name. Your wishlist and Secret Santa assignment will stay the same.</p>
     <form id="migrationForm">
       <div class="form-grid">
         <div><label for="migrationPin">Choose a six-digit PIN</label><input id="migrationPin" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" autocomplete="new-password" required></div>
@@ -119,11 +119,9 @@
     <p class="subtle">Only you and the person assigned to buy for you can view your wishes after the draw.</p>
     <form id="joinForm">
       <div class="form-grid">
-        <div class="span2"><label for="invite">Invitation code</label><input type="text" id="invite" required placeholder="Enter the invitation phrase" autocomplete="off"><p class="hint">Ask your organiser for the invitation phrase.</p></div>
         <div class="span2"><label for="joinName">Your name *</label><input id="joinName" maxlength="50" required minlength="2" placeholder="What shall we call you?"></div>
         <div><label for="joinPin">Choose a six-digit PIN *</label><input id="joinPin" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" autocomplete="new-password" required placeholder="••••••"></div>
         <div><label for="joinPin2">Confirm your PIN *</label><input id="joinPin2" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" autocomplete="new-password" required placeholder="••••••"></div>
-        <div class="span2"><label for="joinHousehold">Household (optional)</label><input id="joinHousehold" maxlength="50" placeholder="e.g. The Maple Flat"><p class="hint">Living alone? Leave this blank. If you live with another participant, use the same household name they use. You won't draw one another.</p></div>
         <div><label for="joinLikes">Likes and favourite things</label><textarea id="joinLikes" maxlength="500" placeholder="Hobbies, favourite colours, scents, snacks…"></textarea></div>
         <div><label for="joinDislikes">Dislikes</label><textarea id="joinDislikes" maxlength="500" placeholder="Things that aren't really your cup of tea…"></textarea></div>
         <div class="span2"><label for="joinWishlist">Wishlist and gift ideas</label><textarea id="joinWishlist" maxlength="700" placeholder="Anything you've been eyeing up lately?"></textarea></div>
@@ -151,7 +149,6 @@
     <form id="editForm">
       <div class="form-grid">
         <div class="span2"><label for="editName">Your name</label><input id="editName" minlength="2" maxlength="50" required></div>
-        <div class="span2"><label for="editHousehold">Household (optional)</label><input id="editHousehold" maxlength="50" placeholder="Leave blank if you live alone"><p id="editHouseholdHint" class="hint">Use exactly the same household name as anyone you live with. You can change this until names are drawn.</p></div>
         <div><label for="editLikes">Likes and favourite things</label><textarea id="editLikes" maxlength="500"></textarea></div>
         <div><label for="editDislikes">Dislikes</label><textarea id="editDislikes" maxlength="500"></textarea></div>
         <div class="span2"><label for="editWishlist">Wishlist and gift ideas</label><textarea id="editWishlist" maxlength="700"></textarea></div>
@@ -181,7 +178,7 @@
   </section>
   <section id="adminPanel" class="card" hidden>
     <p class="eyebrow">Organiser's corner</p><h2>Your little gathering</h2>
-    <p id="adminSummary"></p><p class="fine">Profiles stay private. Before drawing, check that housemates share the same household name. A blank household means the person lives alone. You can correct labels below.</p>
+    <p id="adminSummary"></p><p class="fine">Only you manage households. Friends do not see or edit these labels. Enter the same household name for everyone who lives together, then click Save household for each person. Leave it blank for people who live alone. Labels are locked after the draw.</p>
     <ul id="adminPeople" class="admin-people"></ul>
     <div id="drawPanel"><hr><h3>Draw names</h3><p class="subtle">Each person gets one different person, never anyone from their own household. The draw makes one big circle and cannot be repeated.</p><div id="drawWarning" class="note error" hidden></div><button id="drawButton">Draw the names ✦</button></div>
     <div id="adminStatus" role="status" aria-live="polite"></div>
@@ -193,7 +190,7 @@
 <script>
 'use strict';
 // Paste your existing Apps Script /exec URL here; keep the same deployment.
-const API_URL = 'https://script.google.com/macros/s/AKfycbwstml3m98z8NIyNX79sDfrCKq9r9gD39doDqT7Efl9-cnX_68O1YEtaAk3ra62_9FEgg/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbx9Ilgl51BtbdmfWSkTgKLSbni12QFlUJV8Qye7NyXc68wAZuaMh3Aoc8WLd8gW0-HcvQ/exec';
 const $ = id => document.getElementById(id);
 const panes = ['configuration','start','returnPanel','migrationPanel','joinPanel','successPanel','privatePanel','adminLogin','adminPanel'];
 let mySlug = '';
@@ -209,7 +206,7 @@ function notice(id, msg, kind='error') {
   if (msg) { const el = document.createElement('div'); el.className='note '+kind; el.textContent=msg; $(id).append(el); }
 }
 function field(prefix) {
-  return {name:$(prefix+'Name').value, household:$(prefix+'Household').value,
+  return {name:$(prefix+'Name').value,
     likes:$(prefix+'Likes').value, dislikes:$(prefix+'Dislikes').value,
     wishlist:$(prefix+'Wishlist').value, important:$(prefix+'Important').value};
 }
@@ -278,10 +275,6 @@ async function loadProfile(slug, pin) {
   const data=await api('mine',{slug,pin}); mySlug=slug;myPin=pin;
   history.replaceState({},'',profileLink(slug));
   $('welcomeName').textContent='Hello, '+data.me.name+'!'; fill('edit',data.me);
-  $('editHousehold').disabled=!!data.drawn;
-  $('editHouseholdHint').textContent=data.drawn
-    ? 'Households are locked now that names have been drawn.'
-    : 'Use the same household name as anyone you live with. You can edit this until names are drawn.';
   const area=$('recipientArea');area.replaceChildren();
   if(data.recipient)displayPerson(area,data.recipient);
   else addText(area,'div','Your secret person will appear after the organiser draws names.','note');
@@ -346,7 +339,7 @@ $('joinForm').addEventListener('submit',ev=>{ev.preventDefault();busy(submitBtn(
   if($('joinPin').value!==$('joinPin2').value){notice('joinStatus','Your PINs do not match.');return;}
   try {
     const pin=$('joinPin').value;
-    const result=await api('register',{joinCode:$('invite').value.trim(),profile:field('join'),pin});
+    const result=await api('register',{profile:field('join'),pin});
     mySlug=result.slug;myPin=pin;generatedLink=profileLink(mySlug);
     $('joinPin').value='';$('joinPin2').value='';
     $('newLink').textContent=generatedLink;history.replaceState({},'',generatedLink);
