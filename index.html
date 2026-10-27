@@ -48,6 +48,11 @@
     .admin-people{display:flex;flex-direction:column;gap:9px;list-style:none;margin:14px 0;padding:0}
     .admin-people li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px dashed #d6cbb7}
     .admin-people button{padding:7px 11px;font-size:.8rem}
+    .admin-people li{flex-wrap:wrap}
+    .admin-tools{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+    .admin-tools label{margin:0;font-size:.8rem}
+    .admin-tools input{width:185px;padding:7px 9px;font-size:.85rem}
+    @media(max-width:590px){.admin-tools{width:100%;justify-content:flex-start}.admin-tools input{flex:1;min-width:130px}}
     hr{border:0;border-top:1px dashed #ddd3be;margin:21px 0}
     footer{text-align:center;font:13px/1.5 Arial,sans-serif;color:#768071;padding:8px 15px 38px}
     @media(max-width:590px){header{padding-top:24px}.border{padding:6px;border-radius:14px}.card{border-radius:10px}.form-grid{grid-template-columns:1fr}.span2{grid-column:1}.actions{flex-direction:column}.actions button{width:100%}.admin-people li{align-items:flex-start;flex-direction:column}}
@@ -100,6 +105,7 @@
       <div class="form-grid">
         <div class="span2"><label for="invite">Invitation code</label><input type="password" id="invite" required placeholder="Paste the code from your organiser" autocomplete="off"><p class="hint">Your organiser shares this privately.</p></div>
         <div class="span2"><label for="joinName">Your name *</label><input id="joinName" maxlength="50" required minlength="2" placeholder="What shall we call you?"></div>
+        <div class="span2"><label for="joinHousehold">Household (optional)</label><input id="joinHousehold" maxlength="50" placeholder="e.g. The Maple Flat"><p class="hint">Living alone? Leave this blank. If you live with another participant, use the same household name they use. You won't draw one another.</p></div>
         <div><label for="joinLikes">Likes and favourite things</label><textarea id="joinLikes" maxlength="500" placeholder="Hobbies, favourite colours, scents, snacks…"></textarea></div>
         <div><label for="joinDislikes">Dislikes</label><textarea id="joinDislikes" maxlength="500" placeholder="Things that aren't really your cup of tea…"></textarea></div>
         <div class="span2"><label for="joinWishlist">Wishlist and gift ideas</label><textarea id="joinWishlist" maxlength="700" placeholder="Anything you've been eyeing up lately?"></textarea></div>
@@ -127,6 +133,7 @@
     <form id="editForm">
       <div class="form-grid">
         <div class="span2"><label for="editName">Your name</label><input id="editName" minlength="2" maxlength="50" required></div>
+        <div class="span2"><label for="editHousehold">Household (optional)</label><input id="editHousehold" maxlength="50" placeholder="Leave blank if you live alone"><p id="editHouseholdHint" class="hint">Use exactly the same household name as anyone you live with. You can change this until names are drawn.</p></div>
         <div><label for="editLikes">Likes and favourite things</label><textarea id="editLikes" maxlength="500"></textarea></div>
         <div><label for="editDislikes">Dislikes</label><textarea id="editDislikes" maxlength="500"></textarea></div>
         <div class="span2"><label for="editWishlist">Wishlist and gift ideas</label><textarea id="editWishlist" maxlength="700"></textarea></div>
@@ -146,9 +153,9 @@
   </section>
   <section id="adminPanel" class="card" hidden>
     <p class="eyebrow">Organiser's corner</p><h2>Your little gathering</h2>
-    <p id="adminSummary"></p><p class="fine">Profiles stay private. You can see the participants, make the draw, and issue a new personal link if one is lost.</p>
+    <p id="adminSummary"></p><p class="fine">Profiles stay private. Before drawing, check that housemates share the same household name. A blank household means the person lives alone. You can correct labels below.</p>
     <ul id="adminPeople" class="admin-people"></ul>
-    <div id="drawPanel"><hr><h3>Draw names</h3><p class="subtle">Once drawn, assignments are permanent. Each person gets exactly one different person.</p><button id="drawButton">Draw the names ✦</button></div>
+    <div id="drawPanel"><hr><h3>Draw names</h3><p class="subtle">Each person gets one different person, never anyone from their own household. The draw makes one big circle and cannot be repeated.</p><div id="drawWarning" class="note error" hidden></div><button id="drawButton">Draw the names ✦</button></div>
     <div id="adminStatus" role="status" aria-live="polite"></div>
     <div id="replacement" class="note" hidden><strong>Replacement private link</strong><p id="replacementName"></p><code id="replacementLink" class="linkbox"></code><button id="copyReplacement">Copy replacement link</button><p class="hint">Send this only to its owner. Their previous link is now invalid.</p></div>
   </section>
@@ -158,7 +165,7 @@
 <script>
 'use strict';
 // Paste your Apps Script Web app URL, e.g. https://script.google.com/macros/s/AKfy.../exec
-const API_URL = 'https://script.google.com/macros/s/AKfycbysXtljBpi0xMu0ubfNfLyqBeiVnsnExns_pAOCEp2mC6NiolQs5kSOpRzfDVp91GpXaQ/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxtXG9r9r5OC1pTU4W4IokwbU5ERFtty5YpySTMAJa3ORGzYo0X8ZBozrtHbtr9zSomgw/exec';
 const $ = id => document.getElementById(id);
 const panes = ['configuration','start','returnPanel','joinPanel','successPanel','privatePanel','adminLogin','adminPanel'];
 let myToken = '';
@@ -167,7 +174,7 @@ let latestAdmin = null;
 let generatedLink = '';
 function show(id){panes.forEach(x=>$(x).hidden = x!==id);}
 function notice(id,text,kind='error'){$(id).replaceChildren(); if(text){const el=document.createElement('div');el.className='note '+kind;el.textContent=text;$(id).append(el);}}
-function field(prefix){return {name:$(prefix+'Name').value,likes:$(prefix+'Likes').value,dislikes:$(prefix+'Dislikes').value,wishlist:$(prefix+'Wishlist').value,important:$(prefix+'Important').value};}
+function field(prefix){return {name:$(prefix+'Name').value,household:$(prefix+'Household').value,likes:$(prefix+'Likes').value,dislikes:$(prefix+'Dislikes').value,wishlist:$(prefix+'Wishlist').value,important:$(prefix+'Important').value};}
 function fill(prefix,p){for(const [key,value] of Object.entries(p)){$(prefix+key[0].toUpperCase()+key.slice(1)).value=value||'';}}
 function privateLink(token){const url=new URL(window.location.href);url.searchParams.delete('organiser');url.hash='token='+encodeURIComponent(token);return url.toString();}
 function readToken(text){
@@ -208,6 +215,10 @@ async function loadProfile(token){
   const p=await api('mine',{token}); myToken=token;
   history.replaceState({},'',privateLink(token));
   $('welcomeName').textContent='Hello, '+p.me.name+'!';fill('edit',p.me);
+  $('editHousehold').disabled=!!p.drawn;
+  $('editHouseholdHint').textContent=p.drawn
+    ? 'Households are locked now that the names have been drawn.'
+    : 'Use exactly the same household name as anyone you live with. You can change this until names are drawn.';
   const area=$('recipientArea');area.replaceChildren();
   if(p.recipient)displayPerson(area,p.recipient);
   else addText(area,'div','Your secret person will appear here when the organiser has drawn the names.','note');
@@ -224,7 +235,22 @@ async function loadAdmin(){
   $('adminPeople').replaceChildren();
   for(const person of view.participants){
     const li=addText($('adminPeople'),'li','');addText(li,'span',person.name);
-    const btn=addText(li,'button','Replace private link');btn.type='button';btn.className='secondary';
+    const tools=document.createElement('div');tools.className='admin-tools';li.append(tools);
+    addText(tools,'span','Household','fine');
+    const householdInput=document.createElement('input');
+    householdInput.setAttribute('aria-label','Household for '+person.name);
+    householdInput.maxLength=50;householdInput.placeholder='Lives alone';householdInput.value=person.household||'';
+    tools.append(householdInput);
+    if(view.drawn){householdInput.disabled=true;}
+    else {
+      const saveHouse=addText(tools,'button','Save household');saveHouse.type='button';saveHouse.className='secondary';
+      saveHouse.addEventListener('click',()=>busy(saveHouse,async()=>{
+        try {await api('setHousehold',{adminCode,personId:person.id,household:householdInput.value});
+          await loadAdmin();notice('adminStatus','Household updated for '+person.name+'.','success');
+        }catch(e){notice('adminStatus',e.message);}
+      }));
+    }
+    const btn=addText(tools,'button','Replace private link');btn.type='button';btn.className='secondary';
     btn.addEventListener('click',()=>busy(btn,async()=>{
       if(!confirm('Invalidate '+person.name+'\'s current private link and create a new one?'))return;
       try {const result=await api('resetLink',{adminCode,personId:person.id});
@@ -233,7 +259,13 @@ async function loadAdmin(){
       } catch(e){notice('adminStatus',e.message);}
     }));$('adminPeople').append(li);
   }
-  $('drawPanel').hidden=view.drawn;show('adminPanel');
+  $('drawPanel').hidden=view.drawn;
+  $('drawButton').disabled=!view.canDraw;
+  $('drawWarning').hidden=view.drawn || view.count<3 || view.canDraw;
+  if(!view.drawn && view.count>=3 && !view.canDraw){
+    $('drawWarning').textContent='The draw is not possible yet: the largest household has '+view.largestHousehold+' of '+view.count+' people. No household can include more than half the participants. Review the groups before drawing.';
+  }
+  show('adminPanel');
 }
 $('newJoin').addEventListener('click',()=>show('joinPanel'));
 $('existing').addEventListener('click',()=>show('returnPanel'));
@@ -263,7 +295,7 @@ $('adminForm').addEventListener('submit',ev=>{ev.preventDefault();const btn=subm
 });});
 $('drawButton').addEventListener('click',()=>busy($('drawButton'),async()=>{
   if(!latestAdmin || latestAdmin.count<3){notice('adminStatus','At least three friends are needed for the draw.');return;}
-  if(!confirm('Draw names now? This is permanent and cannot be repeated.'))return;
+  if(!confirm('Have you checked everyone’s household? Draw names now? This is permanent and cannot be repeated.'))return;
   try {await api('draw',{adminCode});await loadAdmin();await refreshCount();notice('adminStatus','The draw is complete! Everyone can now open their private links.','success');}
   catch(e){notice('adminStatus',e.message);}
 }));
