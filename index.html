@@ -76,7 +76,6 @@
     <p style="text-align: left;">❅ Where: At <b>Leticia&Ricardo</b>'s place (the address will be shared later)</p>
     </spam>
      <br>
-     <spam>Join the Secret Santa draw below</spam>
     <!--div id="counter" class="counter">Opening the gift exchange…</div-->
   </section>
 
@@ -96,12 +95,10 @@
     <!--p class="eyebrow">An old friend returns</p--><p class="eyebrow">Welcome back</p>
     <!--p class="subtle">Your profile link is just your name — enter your private PIN to open your profile.</p-->
     <form id="returnForm">
-      <label for="loginName">Your name *</label>
-      <!--input id="loginName" required autocomplete="username" placeholder="e.g. lorena or your link"-->
-      <input id="loginName" required autocomLplete="username">
+      <label for="loginName">Your username *</label>
+      <input id="loginName" required autocomplete="username" placeholder="your name in lower case">
       <label for="loginPin">Your six-digit PIN *</label>
-      <input type="password" id="loginPin" required inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6">
-      <!--autocomplete="current-password" placeholder="••••••"-->
+      <input type="password" id="loginPin" required inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" autocomplete="current-password" placeholder="••••••">
       <div class="actions"><button type="submit">Open my profile ✦</button><button type="button" class="secondary" data-back>Back</button></div>
     </form>
     <p class="hint">Forgot your PIN? Ask the organiser (aka Lorena) to reset it. If you still have an old long private link, open it once to set up your PIN.</p>
@@ -122,11 +119,11 @@
   </section>
 
   <section id="joinPanel" class="card" hidden>
-    <p class="eyebrow">A place for you</p><h2>Your little profile</h2>
+    <p class="eyebrow">A place for you</p><h2>Your cosy little cosy</h2>
     <p class="subtle">Only you and the person assigned to buy for you can view your wishes after the draw.</p>
     <form id="joinForm">
       <div class="form-grid">
-        <div class="span2"><label for="joinName">Your name *</label><input id="joinName" maxlength="50" required minlength="2" placeholder="What shall we call you?"></div>
+        <div class="span2"><label for="joinName">Your first name *</label><input id="joinName" maxlength="50" required minlength="2" placeholder="What shall we call you?"></div>
         <div><label for="joinPin">Choose a six-digit PIN *</label><input id="joinPin" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" autocomplete="new-password" required placeholder="••••••"></div>
         <div><label for="joinPin2">Confirm your PIN *</label><input id="joinPin2" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" autocomplete="new-password" required placeholder="••••••"></div>
         <div><label for="joinLikes">Likes and favourite things</label><textarea id="joinLikes" maxlength="500" placeholder="Hobbies, favourite colours, scents, snacks…"></textarea></div>
@@ -140,15 +137,15 @@
   </section>
 
   <section id="successPanel" class="card" hidden>
-    <p class="eyebrow">You're in!</p><h2>Your little corner is ready</h2>
-    <p>Here's your easy-to-remember profile link. Your PIN is the secret part, so share the link freely but keep the PIN to yourself.</p>
+    <p class="eyebrow">You're in!</p><h2>Your profile is ready</h2>
+    <p>Here's your profile link. Keep your PIN a secret.</p>
     <code id="newLink" class="linkbox"></code>
     <div class="actions"><button id="copyNew">Copy my profile link</button><button id="openNew" class="secondary">Open my profile</button></div>
     <div id="successStatus" role="status" aria-live="polite"></div>
   </section>
 
   <section id="privatePanel" class="card" hidden>
-    <p class="eyebrow">Your cosy little corner</p><h2 id="welcomeName">Hello there!</h2>
+    <p class="eyebrow">Hello there!</p>
     <div id="recipientArea"></div>
     <hr>
     <h3>Your profile</h3>
@@ -174,17 +171,17 @@
       <div class="actions"><button type="submit" class="secondary">Change my PIN</button></div>
     </form>
     <div id="changePinStatus" role="status" aria-live="polite"></div>
-    <hr><h3>The little gathering</h3><ul id="nameList" class="list-names"></ul>
+    <!--hr><h3>The little gathering</h3><ul id="nameList" class="list-names"></ul-->
   </section>
 
   <section id="adminLogin" class="card" hidden>
     <p class="eyebrow">Organiser's private entrance</p><h2>The organiser's corner</h2>
-    <p class="subtle">This view is only shown at <code>?organiser=1</code>. Your organiser code is checked by the server, never stored on GitHub.</p>
+    <!--p class="subtle">This view is only shown at <code>?organiser=1</code>. Your organiser code is checked by the server, never stored on GitHub.</p-->
     <form id="adminForm"><label for="adminCode">Your private organiser code</label><input type="password" id="adminCode" required autocomplete="off"><div class="actions"><button type="submit">Open organiser panel</button></div></form>
     <div id="adminLoginStatus" role="status" aria-live="polite"></div>
   </section>
   <section id="adminPanel" class="card" hidden>
-    <p class="eyebrow">Organiser's corner</p><h2>Your little gathering</h2>
+    <p class="eyebrow">Organiser's corner</p><h2>Your Secret Santa</h2>
     <p id="adminSummary"></p><p class="fine">Only you manage households. Friends do not see or edit these labels. Enter the same household name for everyone who lives together, then click Save household for each person. Leave it blank for people who live alone. Labels are locked after the draw.</p>
     <ul id="adminPeople" class="admin-people"></ul>
     <div id="drawPanel"><hr><h3>Draw names</h3><p class="subtle">Each person gets one different person, never anyone from their own household. The draw makes one big circle and cannot be repeated.</p><div id="drawWarning" class="note error" hidden></div><button id="drawButton">Draw the names ✦</button></div>
