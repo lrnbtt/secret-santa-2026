@@ -103,7 +103,7 @@
     <p class="subtle">Only you and the person assigned to buy for you can view your wishes after the draw.</p>
     <form id="joinForm">
       <div class="form-grid">
-        <div class="span2"><label for="invite">Invitation code</label><input type="password" id="invite" required placeholder="Paste the code from your organiser" autocomplete="off"><p class="hint">Your organiser shares this privately.</p></div>
+        <div class="span2"><label for="invite">Invitation code</label><input type="text" id="invite" required placeholder="Paste the code from your organiser" autocomplete="off"><p class="hint">Your organiser shares this privately.</p></div>
         <div class="span2"><label for="joinName">Your name *</label><input id="joinName" maxlength="50" required minlength="2" placeholder="What shall we call you?"></div>
         <div class="span2"><label for="joinHousehold">Household (optional)</label><input id="joinHousehold" maxlength="50" placeholder="e.g. The Maple Flat"><p class="hint">Living alone? Leave this blank. If you live with another participant, use the same household name they use. You won't draw one another.</p></div>
         <div><label for="joinLikes">Likes and favourite things</label><textarea id="joinLikes" maxlength="500" placeholder="Hobbies, favourite colours, scents, snacks…"></textarea></div>
@@ -179,7 +179,8 @@ function fill(prefix,p){for(const [key,value] of Object.entries(p)){$(prefix+key
 function privateLink(token){const url=new URL(window.location.href);url.searchParams.delete('organiser');url.hash='token='+encodeURIComponent(token);return url.toString();}
 function readToken(text){
   const trimmed=String(text||'').trim();
-  if(/^[a-f0-9]{64}$/i.test(trimmed))return trimmed.toLowerCase();
+  if(/^([a-f0-9]{32}|[a-f0-9]{64})$/i.test(trimmed))
+    return trimmed.toLowerCase();
   try {const url=new URL(trimmed);const frag=new URLSearchParams(url.hash.slice(1));return frag.get('token')||'';}catch {return '';}
 }
 async function copyText(value, statusId){
