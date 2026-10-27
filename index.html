@@ -71,10 +71,10 @@
   <section class="card hero" aria-label="Welcome">
     <!--p class="eyebrow">The little gathering</p-->
     <h2>You're invited to a little gathering</h2><br>
-    <spam><p style="text-align: left;">❅ When: <b>6 December</b></p>
+    <div class="event-details"><p style="text-align: left;">❅ When: <b>6 December</b></p>
     <p style="text-align: left;">❅ Time: <b>Lunchtime</b> - bring dishes to share!</p>
-    <p style="text-align: left;">❅ Where: At <b>Leticia&Ricardo</b>'s place (the address will be shared later)</p>
-    </spam>
+    <p style="text-align: left;">❅ Where: At <b>Leticia &amp; Ricardo</b>'s place (the address will be shared later)</p>
+    </div>
      <br>
     <!--div id="counter" class="counter">Opening the gift exchange…</div-->
   </section>
@@ -119,7 +119,7 @@
   </section>
 
   <section id="joinPanel" class="card" hidden>
-    <p class="eyebrow">A place for you</p><h2>Your cosy little cosy</h2>
+    <p class="eyebrow">A place for you</p><h2>Your cosy little corner</h2>
     <p class="subtle">Only you and the person assigned to buy for you can view your wishes after the draw.</p>
     <form id="joinForm">
       <div class="form-grid">
@@ -278,16 +278,21 @@ function displayPerson(container,person) {
 async function loadProfile(slug, pin) {
   const data=await api('mine',{slug,pin}); mySlug=slug;myPin=pin;
   history.replaceState({},'',profileLink(slug));
-  $('welcomeName').textContent='Hello, '+data.me.name+'!'; fill('edit',data.me);
+  const welcome=$('welcomeName');
+  if(welcome) welcome.textContent='Hello, '+data.me.name+'!';
+  fill('edit',data.me);
   const area=$('recipientArea');area.replaceChildren();
   if(data.recipient)displayPerson(area,data.recipient);
   else addText(area,'div','Your secret person will appear after the organiser draws names.','note');
-  $('nameList').replaceChildren();for(const name of data.names)addText($('nameList'),'li',name);
+  const nameList=$('nameList');
+  if(nameList){nameList.replaceChildren();for(const name of data.names)addText(nameList,'li',name);}
   show('privatePanel'); return data;
 }
 async function refreshCount() {
-  try {const p=await api('publicInfo'); $('counter').textContent=p.count+' '+(p.count===1?'person':'people')+' in the exchange'+(p.drawn?' · Names have been drawn':'');}
-  catch(e) {$('counter').textContent='Could not load the gathering: '+e.message;}
+  const counter=$('counter');
+  if(!counter) return; // Count is optional on the Friendmas welcome page.
+  try {const p=await api('publicInfo');counter.textContent=p.count+' '+(p.count===1?'person':'people')+' in the exchange'+(p.drawn?' · Names have been drawn':'');}
+  catch(e) {counter.textContent='Could not load the gathering: '+e.message;}
 }
 async function loadAdmin() {
   const view=await api('adminView',{adminCode});latestAdmin=view;
@@ -376,8 +381,10 @@ $('openNew').addEventListener('click',async()=>{
 $('editForm').addEventListener('submit',ev=>{ev.preventDefault();busy(submitBtn(ev),async()=>{
   try {
     const p=await api('save',{slug:mySlug,pin:myPin,profile:field('edit')});
-    $('welcomeName').textContent='Hello, '+p.me.name+'!';
-    $('nameList').replaceChildren();for(const name of p.names)addText($('nameList'),'li',name);
+    const welcome=$('welcomeName');
+    if(welcome) welcome.textContent='Hello, '+p.me.name+'!';
+    const nameList=$('nameList');
+    if(nameList){nameList.replaceChildren();for(const name of p.names)addText(nameList,'li',name);}
     notice('profileStatus','Your changes are saved.','success');
   } catch(e){notice('profileStatus',e.message);}
 });});
@@ -403,7 +410,7 @@ $('drawButton').addEventListener('click',()=>busy($('drawButton'),async()=>{
 }));
 $('copyReplacement').addEventListener('click',()=>copyText(resetInfo,'adminStatus'));
 (async()=>{
-  if(!/^https:\/\/.+/.test(API_URL)||API_URL.includes('PASTE_')){$('counter').textContent='';show('configuration');return;}
+  if(!/^https:\/\/.+/.test(API_URL)||API_URL.includes('PASTE_')){show('configuration');return;}
   const adminMode=new URLSearchParams(location.search).get('organiser')==='1';
   oldToken=readLegacyToken(location.href);
   if(adminMode) show('adminLogin');
