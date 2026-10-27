@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="no-referrer">
   <meta name="color-scheme" content="light">
-  <title>⋆❅*𖢔꙳✮Secret Santa 2026⋆❅*𖢔꙳✮</title>
+  <title>⋆❅*𖢔꙳✮Friendmas 2026⋆❅*𖢔꙳✮</title>
   <meta name="description" content="A cosy little Secret Santa circle for friends.">
   <style>
     :root{--pine:#2d493c;--red:#9b3d46;--cream:#f7f4ea;--ink:#324337;--muted:#687368;--outline:#d7d1bc;--gold:#a97c44}
@@ -63,20 +63,21 @@
 <header>
   <!--div class="mini">A cosy game between friends</div-->
   <!--div class="art" aria-hidden="true">⋆*𖢔꙳✮꙳𖢔*⋆</div-->
-  <h1>Secret Santa 2026</h1>
+  <h1>Friendmas 2026</h1>
   <p class="sub">⋆*𖢔꙳✮꙳𖢔*⋆</p>
 </header>
 <main>
  <div class="border">
   <section class="card hero" aria-label="Welcome">
     <!--p class="eyebrow">The little gathering</p-->
-    <h2>You're invited to a little gathering</h2>
-    <spam><p style="text-align: left;">❅ We'll meet on <b>6 December</b> for a friendmas celebration.</p>
-    <p style="text-align: left;">❅ When: <b>Lunchtime</b> - bring dishes to share!</p>
+    <h2>You're invited to a little gathering</h2><br>
+    <spam><p style="text-align: left;">❅ When: <b>6 December</b></p>
+    <p style="text-align: left;">❅ Time: <b>Lunchtime</b> - bring dishes to share!</p>
     <p style="text-align: left;">❅ Where: At <b>Leticia&Ricardo</b>'s place (the address will be shared later)</p>
     </spam>
      <br>
-    <div id="counter" class="counter">Opening the gift exchange…</div>
+     <spam>Join the Secret Santa draw below</spam>
+    <!--div id="counter" class="counter">Opening the gift exchange…</div-->
   </section>
 
   <div id="configuration" class="card" hidden>
@@ -85,23 +86,25 @@
   </div>
 
   <section id="start" class="card" hidden>
-    <p class="eyebrow">Welcome, lovely people</p>
-    <h2>Come on in</h2>
-    <p class="subtle">Make a little profile, or return with your name and six-digit PIN.</p>
-    <div class="actions"><button id="newJoin">Join the circle ✦</button><button id="existing" class="secondary">Open my profile</button></div>
+    <p class="eyebrow">Welcome!</p>
+    <h2>Log in/Create profile</h2>
+    <p class="subtle">Make a profile or return with your name and six-digit PIN.</p>
+    <div class="actions"><button id="newJoin">Join the Secret Santa draw ✦</button><button id="existing" class="secondary">Open my profile</button></div>
   </section>
 
   <section id="returnPanel" class="card" hidden>
-    <p class="eyebrow">An old friend returns</p><h2>Welcome back</h2>
-    <p class="subtle">Your profile link is just your name — enter your private PIN to open your profile.</p>
+    <!--p class="eyebrow">An old friend returns</p--><p class="eyebrow">Welcome back</p>
+    <!--p class="subtle">Your profile link is just your name — enter your private PIN to open your profile.</p-->
     <form id="returnForm">
-      <label for="loginName">Your name or profile link</label>
-      <input id="loginName" required autocomplete="username" placeholder="e.g. lorena or your link">
-      <label for="loginPin">Your six-digit PIN</label>
-      <input type="password" id="loginPin" required inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" autocomplete="current-password" placeholder="••••••">
+      <label for="loginName">Your name *</label>
+      <!--input id="loginName" required autocomplete="username" placeholder="e.g. lorena or your link"-->
+      <input id="loginName" required autocomLplete="username">
+      <label for="loginPin">Your six-digit PIN *</label>
+      <input type="password" id="loginPin" required inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6">
+      <!--autocomplete="current-password" placeholder="••••••"-->
       <div class="actions"><button type="submit">Open my profile ✦</button><button type="button" class="secondary" data-back>Back</button></div>
     </form>
-    <p class="hint">Forgot your PIN? Ask the organiser to reset it. If you still have an old long private link, open it once to set up your PIN.</p>
+    <p class="hint">Forgot your PIN? Ask the organiser (aka Lorena) to reset it. If you still have an old long private link, open it once to set up your PIN.</p>
     <div id="returnStatus" role="status" aria-live="polite"></div>
   </section>
 
